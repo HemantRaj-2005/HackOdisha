@@ -12,6 +12,10 @@ import {
   updateUserStart,
   updateUserSuccess,
   updateUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
+  deleteUserFailure,
+  signOut,
 } from "../redux/user/userSlice";
 
 export default function Profile() {
@@ -77,6 +81,32 @@ export default function Profile() {
       setUpdateSuccess(true);
     } catch (error) {
       dispatch(updateUserFailure(error));
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      dispatch(deleteUserStart());
+      const res = await fetch(`/server/user/delete/${currentUser._id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(deleteUserFailure(data));
+        return;
+      }
+      dispatch(deleteUserSuccess(data));
+    } catch (error) {
+      dispatch(deleteUserFailure(error));
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await fetch("/server/auth/signout");
+      dispatch(signOut());
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -149,10 +179,16 @@ export default function Profile() {
           </button>
         </form>
         <div className="flex justify-between mt-6">
-          <span className="text-[#ff4d4d] cursor-pointer hover:underline">
+          <span
+            className="text-[#ff4d4d] cursor-pointer hover:underline"
+            onClick={handleDeleteAccount}
+          >
             Delete Account
           </span>
-          <span className="text-[#ff4d4d] cursor-pointer hover:underline">
+          <span
+            onClick={handleSignOut}
+            className="text-[#ff4d4d] cursor-pointer hover:underline"
+          >
             Sign out
           </span>
         </div>
