@@ -28,14 +28,21 @@ export default function SignUp() {
       toast.error("Please fill in the username.");
       return false;
     }
+  
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // General email pattern
     if (!formData.email) {
       toast.error("Please fill in the email.");
       return false;
+    } else if (!emailPattern.test(formData.email)) {
+      toast.error("Please enter a valid email address.");
+      return false;
     }
+  
     if (!formData.password) {
       toast.error("Please fill in the password.");
       return false;
     }
+    
     return true;
   };
 
