@@ -3,6 +3,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import OAuth from "../components/OAuth";
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
@@ -134,6 +135,9 @@ export default function SignUp() {
           >
             {loading ? "Signing Up..." : "Sign Up"}
           </button>
+          <div className="mt-5">
+            <OAuth />
+          </div>
         </form>
         <p className="text-[#d1d5db] text-center mt-6">
           Already have an account?{" "}

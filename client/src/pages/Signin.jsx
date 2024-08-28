@@ -9,12 +9,13 @@ import {
   signInFailure,
 } from "../redux/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
+import OAuth from "../components/OAuth";
 
 export default function Signin() {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    email: "",
+    password: "",
   });
   const { loading } = useSelector((state) => state.user);
   const navigate = useNavigate();
@@ -46,28 +47,28 @@ export default function Signin() {
     if (!validateForm()) return;
 
     try {
-        dispatch(signInStart());
-        const res = await fetch('/server/auth/signin', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        });
-        const data = await res.json();
+      dispatch(signInStart());
+      const res = await fetch("/server/auth/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
 
-        if (data.success === false) {
-          dispatch(signInFailure(data));
-          toast.error(data.message || "Sign-in failed. Please try again.");
-          return;
-        }
-        dispatch(signInSuccess(data));
-        toast.success("Sign-in successful!");
-        navigate('/');
-      } catch (error) {
-        dispatch(signInFailure(error));
-        toast.error("An unexpected error occurred. Please try again.");
+      if (data.success === false) {
+        dispatch(signInFailure(data));
+        toast.error(data.message || "Sign-in failed. Please try again.");
+        return;
       }
+      dispatch(signInSuccess(data));
+      toast.success("Sign-in successful!");
+      navigate("/");
+    } catch (error) {
+      dispatch(signInFailure(error));
+      toast.error("An unexpected error occurred. Please try again.");
+    }
   };
 
   return (
@@ -123,6 +124,9 @@ export default function Signin() {
           >
             {loading ? "Signing In..." : "Sign In"}
           </button>
+          <div className="mt-5">
+            <OAuth />
+          </div>
         </form>
         <p className="text-[#d1d5db] text-center mt-6">
           Don't have an account?{" "}
