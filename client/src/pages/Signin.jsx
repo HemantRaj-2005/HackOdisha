@@ -12,8 +12,11 @@ import { useDispatch, useSelector } from "react-redux";
 
 export default function Signin() {
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({});
-  const { loading, error } = useSelector((state) => state.user);
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const { loading } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -128,7 +131,7 @@ export default function Signin() {
           </Link>
         </p>
       </div>
-      <ToastContainer />
+      <ToastContainer position="top-right" autoClose={5000} />
     </div>
   );
 }
