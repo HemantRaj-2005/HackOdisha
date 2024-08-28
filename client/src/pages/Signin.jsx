@@ -3,15 +3,19 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../redux/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function Signin() {
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({});
+  const { loading, error } = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -39,33 +43,36 @@ export default function Signin() {
     if (!validateForm()) return;
 
     try {
-      setLoading(true);
-      const res = await fetch("/server/auth/signin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-      const data = await res.json();
-      setLoading(false);
+        dispatch(signInStart());
+        const res = await fetch('/server/auth/signin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+        const data = await res.json();
 
-      if (data.success === false) {
-        toast.error(data.message || "Sign In failed. Please try again.");
-        return;
+        if (data.success === false) {
+          dispatch(signInFailure(data));
+          toast.error(data.message || "Sign-in failed. Please try again.");
+          return;
+        }
+        dispatch(signInSuccess(data));
+        toast.success("Sign-in successful!");
+        navigate('/');
+      } catch (error) {
+        dispatch(signInFailure(error));
+        toast.error("An unexpected error occurred. Please try again.");
       }
-      toast.success("Sign In successful! Welcome back!");
-      navigate('/profile');
-    } catch (error) {
-      setLoading(false);
-      toast.error("An unexpected error occurred. Please try again.");
-    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-[#070614] via-[#121024] to-[#000000]">
       <div className="max-w-lg w-full bg-[#1c1c2c]/75 backdrop-blur-md rounded-2xl shadow-2xl p-10 relative">
-        <h2 className="text-3xl font-bold text-white text-center mb-6">Sign In</h2>
+        <h2 className="text-3xl font-bold text-white text-center mb-6">
+          Sign In
+        </h2>
         <form>
           <div className="mb-6">
             <label
